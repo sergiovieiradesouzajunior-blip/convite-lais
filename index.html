@@ -370,7 +370,7 @@
    CONFIGURAÇÃO — edite apenas este bloco
    ========================================================================= */
 const CONFIG = {
-  ENDPOINT: "https://script.google.com/macros/s/AKfycbyd8yYniEHTMDaWeNTyi-QnItJBpZx2ZsMPsThYdAy_e2Sv42mTe_AfCck2PtAIX7m8/exec", // App da Web (Apps Script)
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbzHZkQu5V0cPxyL10oWeAR1a0tc0tWRc65tDePyhkcWoeaa68etUaDdHLr8bAr74INvWg/exec", // App da Web (Apps Script)
   NOME: "Laís Braga Vieira de Souza", // nome completo da aniversariante
   MONOGRAMA: "",                // vazio = usa a 1ª letra do nome
   DATA_ISO: "2026-09-26",       // AAAA-MM-DD (contagem regressiva e calendário)
@@ -451,10 +451,12 @@ async function validarCodigo(cod){
   if(temPlanilha()) return await jsonp({action:"validar", codigo:cod});
   if(temDemo()){
     const c=convDemo(cod); if(!c) return {ok:true,valido:false,motivo:"invalido"};
-    const rest=(c.vagas||1)-usadasDemo(await lerDemo(),cod);
-    return {ok:true,valido:rest>0,motivo:rest>0?"":"esgotado",convidado:c.convidado,restantes:rest};
+    const all=await lerDemo(); const confirmados=[];
+    all.forEach((x,i)=>{ if(String(x.codigo||"").toUpperCase()===cod) confirmados.push({nome:x.nome,num:i+1}); });
+    const rest=(c.vagas||1)-confirmados.length;
+    return {ok:true,valido:rest>0,motivo:rest>0?"":"esgotado",convidado:c.convidado,restantes:rest,confirmados:confirmados};
   }
-  return {ok:true,valido:true}; // sem backend e sem demo: não há como validar de fato
+  return {ok:true,valido:true,confirmados:[]}; // sem backend e sem demo: não há como validar de fato
 }
 async function confirmar(cod,nome){
   cod=String(cod||"").trim().toUpperCase();
@@ -503,12 +505,16 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
   if(codeField) codeField.style.display="none";  // OTIMISTA: esconde o campo de imediato
   try{
     const v=await validarCodigo(codigoURL);
-    if(v && v.valido){
-      if(greet){ greet.style.display="block";
-        greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
-          (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
-    } else if(v && v.valido===false){
-      appendBloqueio(v.motivo);                    // inválido/esgotado CONFIRMADO pelo servidor
+    if(v){
+      // reconstrói os cards das confirmações já feitas neste convite (na ordem)
+      if(Array.isArray(v.confirmados)) v.confirmados.forEach(c=> appendConfirmacao(c.nome, c.num));
+      if(v.valido){
+        if(greet){ greet.style.display="block";
+          greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
+            (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
+      } else {
+        appendBloqueio(v.motivo);   // esgotado (com os cards reconstruídos acima) ou inválido
+      }
     }
     // erro/rede lenta: segue otimista; a validação real ocorre ao confirmar (no servidor)
   }catch(e){ /* segue otimista; confirmar valida no servidor */ }
@@ -538,7 +544,9 @@ async function enviar(){
     appendConfirmacao(nome, r.total);
     petalBurst();
     if(r.restantes!=null && r.restantes<=0){
-      appendBloqueio("esgotado");                 // esgotou: o card fica e o formulário sai
+      // esgotou nesta sessão: fica só o(s) card(s) de confirmação; NÃO mostra "já utilizado" agora
+      const fb=document.getElementById("formBox"); if(fb) fb.remove();
+      const hh=document.getElementById("scrollHint"); if(hh) hh.classList.add("hide");
     }else{
       nomeEl.value="";                            // pronto para a próxima pessoa deste convite
       btn.disabled=false; btn.textContent="Confirmar presença";
