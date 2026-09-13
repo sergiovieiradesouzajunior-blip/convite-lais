@@ -224,6 +224,8 @@
   .rsvp-dress{ text-align:center; color:var(--crimson); margin:10px 0 0; position:relative;
     font-size:calc(15px * var(--pct-confirmacao) / 100); line-height:1.4; }
   .rsvp-dress .dc-warn{ display:block; font-weight:700; font-style:italic; font-size:.95em; margin-top:2px; }
+  #resultados .resultado{ margin-top:16px; }
+  #resultados .resultado + .resultado{ border-top:1px solid rgba(150,44,53,.18); padding-top:16px; }
 
   .done{ text-align:center; padding:4px 2px; position:relative }
   .seal{ width:76px; height:76px; margin:2px auto 12px; border-radius:50%; position:relative;
@@ -334,6 +336,7 @@
         <button class="btn" id="btn">Confirmar presença</button>
         <div class="msg" id="msg"></div>
       </div>
+      <div id="resultados"></div>
       <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
     </div>
   </div>
@@ -380,7 +383,7 @@ const CONFIG = {
     { codigo:"LAIS-AB12", convidado:"Família Exemplo", vagas:2 },
     { codigo:"LAIS-CD34", convidado:"Tio João", vagas:1 }
   ],
-  ADMIN_KEY: "Cucuca"          // acesse ?admin=familia para ver a lista
+  ADMIN_KEY: "convidados_20260926"          // acesse ?admin=familia para ver a lista
 };
 /* ========================================================================= */
 
@@ -502,18 +505,20 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
         greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
           (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
     } else if(v && v.valido===false){
-      bloquear(v.motivo);                         // inválido/esgotado CONFIRMADO pelo servidor
+      appendBloqueio(v.motivo);                    // inválido/esgotado CONFIRMADO pelo servidor
     }
     // erro/rede lenta: segue otimista; a validação real ocorre ao confirmar (no servidor)
   }catch(e){ /* segue otimista; confirmar valida no servidor */ }
 })();
-function bloquear(motivo){
-  formBox.innerHTML =
-    '<div class="done"><div class="lockicon">🔒</div>'+
+function appendBloqueio(motivo){
+  const div=document.createElement("div"); div.className="resultado";
+  div.innerHTML='<div class="done"><div class="lockicon">🔒</div>'+
     '<h2>'+(motivo==="esgotado"?"Convite já utilizado":"Convite não válido")+'</h2>'+
     '<p>'+(motivo==="esgotado"
         ? "As vagas deste convite já foram preenchidas."
         : "Este link não corresponde a um convite válido. Fale com quem organizou a festa.")+'</p></div>';
+  document.getElementById("resultados").appendChild(div);
+  const fb=document.getElementById("formBox"); if(fb) fb.remove();
 }
 
 async function enviar(){
@@ -524,31 +529,46 @@ async function enviar(){
   if(nome.length<3||!nome.includes(" ")){ msg.textContent="Por favor, escreva seu nome completo."; msg.classList.add("err"); nomeEl.focus(); return; }
   if(CONFIG.TRAVA && !codigo){ msg.textContent="Informe o código do seu convite."; msg.classList.add("err"); if(codEl)codEl.focus(); return; }
   btn.disabled=true; btn.textContent="Confirmando…"; msg.textContent="";
-  try{ const r=await confirmar(codigo,nome); concluir(nome,r.total); petalBurst(); }
+  try{
+    const r=await confirmar(codigo,nome);
+    appendConfirmacao(nome, r.total);
+    petalBurst();
+    if(r.restantes!=null && r.restantes<=0){
+      appendBloqueio("esgotado");                 // esgotou: o card fica e o formulário sai
+    }else{
+      nomeEl.value="";                            // pronto para a próxima pessoa deste convite
+      btn.disabled=false; btn.textContent="Confirmar presença";
+      const g=document.getElementById("greet");
+      if(r.restantes!=null && g && g.style.display!=="none")
+        g.innerHTML="Vaga(s) restante(s): <b>"+Math.max(0,r.restantes)+"</b>";
+    }
+  }
   catch(err){
     const m=String(err.message);
+    if(m==="esgotado"){ appendBloqueio("esgotado"); return; }
     msg.textContent = m==="invalido" ? "Código de convite não encontrado. Confira com quem te convidou."
-      : m==="esgotado" ? "As vagas deste convite já foram preenchidas."
       : m==="nome"     ? "Por favor, escreva seu nome completo."
       : m==="config"   ? "Convite em configuração: falta ligar a planilha (veja o passo a passo)."
       : "Não consegui confirmar agora. Tente novamente em instantes.";
     msg.classList.add("err"); btn.disabled=false; btn.textContent="Confirmar presença";
   }
 }
-function concluir(nome,total){
+function appendConfirmacao(nome,total){
   const primeiro=escapeHtml(nome.split(" ")[0]);
   const inicial=(CONFIG.MONOGRAMA||CONFIG.NOME.trim()[0]||"A").toUpperCase();
   const linha=total?`<p class="count">Você é a confirmação nº <b>${total}</b>. 🌹</p>`:"";
-  formBox.innerHTML=`
+  const div=document.createElement("div"); div.className="resultado";
+  div.innerHTML=`
     <div class="done">
-      <div class="seal" id="seal">${escapeHtml(inicial)}</div>
+      <div class="seal">${escapeHtml(inicial)}</div>
       <h2>Presença confirmada!</h2>
       <p>Obrigada, <b>${primeiro}</b>. Será uma alegria ter você conosco.</p>
       ${linha}
-      <button class="btn ghost" id="ics">Adicionar ao calendário</button>
+      <button class="btn ghost ics">Adicionar ao calendário</button>
     </div>`;
-  requestAnimationFrame(()=>document.getElementById("seal").classList.add("stamp"));
-  document.getElementById("ics").addEventListener("click",baixarICS);
+  document.getElementById("resultados").appendChild(div);
+  requestAnimationFrame(()=>{ const s=div.querySelector(".seal"); if(s) s.classList.add("stamp"); });
+  div.querySelector(".ics").addEventListener("click",baixarICS);
 }
 
 /* ---------- adicionar ao calendário (.ics) ---------- */
