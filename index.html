@@ -6,7 +6,7 @@
 <title>Convite — Quinze Anos</title>
 
 <!-- Prévia no WhatsApp (Open Graph) — imagem já configurada. -->
-<meta property="og:title" content="Festa de 15 anos da Laís">
+<meta property="og:title" content="Você está convidado(a) — Quinze Anos">
 <meta property="og:description" content="Toque para confirmar sua presença.">
 <meta property="og:image" content="https://sergiovieiradesouzajunior-blip.github.io/convite-lais/convite-previa.jpg">
 <meta property="og:type" content="website">
@@ -17,6 +17,10 @@
 
 <style>
   :root{
+    /* ===== TAMANHO DOS TEXTOS POR CARD — edite os percentuais (100 = atual; 130 = +30%; 90 = -10%) ===== */
+    --pct-arte:100;         /* card principal (moldura) */
+    --pct-detalhes:100;     /* card de detalhes (data/horario/endereco) */
+    --pct-confirmacao:100;  /* card de confirmacao de presenca */
     --cream:#F1EDE2; --paper:#E9E3D4; --paper2:#FBF9F3;
     --crimson:#962C35; --rose:#A81E28; --deep:#7f2129;
     --green:#3B5E3A; --ink:#57262b;
@@ -88,18 +92,18 @@
     font-family:"Cormorant Garamond",serif; font-weight:600; color:var(--gold);
     border:1px solid var(--gold); width:2.1em; height:2.1em; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    font-size:clamp(13px,3.6vw,17px); letter-spacing:.02em; margin-bottom:.5em;
+    font-size:calc(clamp(13px,3.6vw,17px) * var(--pct-arte) / 100); letter-spacing:.02em; margin-bottom:.5em;
     box-shadow:0 0 12px rgba(201,166,91,.4), inset 0 0 8px rgba(201,166,91,.25);
     opacity:0; transform:translateY(8px) scale(.9);
   }
   .eyebrow{
     font-style:italic; color:var(--crimson); opacity:.9; margin:0 0 .25em;
-    font-size:clamp(11px,3.1vw,14.5px); letter-spacing:.03em;
+    font-size:calc(clamp(11px,3.1vw,14.5px) * var(--pct-arte) / 100); letter-spacing:.03em;
     opacity:0; transform:translateY(6px);
   }
   .name{
     font-family:"Pinyon Script",cursive; margin:0; line-height:.9;
-    font-size:clamp(42px,14vw,80px);
+    font-size:calc(clamp(42px,14vw,80px) * var(--pct-arte) / 100);
     background:linear-gradient(100deg,var(--deep) 0%,var(--crimson) 38%,var(--gold2) 49%,var(--gold) 51%,var(--crimson) 62%,var(--deep) 100%);
     background-size:250% 100%; background-position:130% 0;
     -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -109,12 +113,12 @@
   }
   .surname{
     color:var(--crimson); margin:.15em 0 0; text-transform:uppercase;
-    font-size:clamp(9.5px,2.7vw,12.5px); letter-spacing:.28em; font-weight:500;
+    font-size:calc(clamp(9.5px,2.7vw,12.5px) * var(--pct-arte) / 100); letter-spacing:.28em; font-weight:500;
     opacity:0; transform:translateY(6px);
   }
   .occasion{
     font-style:italic; color:var(--crimson); margin:.1em 0 .35em;
-    font-size:clamp(15px,4.7vw,24px); letter-spacing:.05em;
+    font-size:calc(clamp(15px,4.7vw,24px) * var(--pct-arte) / 100); letter-spacing:.05em;
     opacity:0; transform:translateY(8px);
   }
   .rule{ display:flex; align-items:center; gap:.5em; margin:.15em 0 .4em; opacity:0; }
@@ -122,12 +126,12 @@
   .rule b{ color:var(--gold); font-size:.7em; transform:scale(0); }
   .date{
     font-weight:700; color:var(--crimson); letter-spacing:.08em; margin:0;
-    font-size:clamp(24px,7.8vw,40px); opacity:0; transform:translateY(8px);
+    font-size:calc(clamp(24px,7.8vw,40px) * var(--pct-arte) / 100); opacity:0; transform:translateY(8px);
   }
-  .year{ font-size:clamp(10px,2.9vw,13px); letter-spacing:.34em; color:var(--crimson); margin:.3em 0 0; opacity:0; }
+  .year{ font-size:calc(clamp(10px,2.9vw,13px) * var(--pct-arte) / 100); letter-spacing:.34em; color:var(--crimson); margin:.3em 0 0; opacity:0; }
   .countdown{
     margin:.55em 0 0; font-style:italic; color:var(--deep); opacity:0;
-    font-size:clamp(12px,3.4vw,16px);
+    font-size:calc(clamp(12px,3.4vw,16px) * var(--pct-arte) / 100);
   }
 
   .stage.in .mono{ animation:rise .8s cubic-bezier(.2,1.1,.3,1) .8s forwards }
@@ -175,12 +179,12 @@
     opacity:0; transform:translateY(14px); transition:opacity .8s ease, transform .8s ease; }
   .details.in{ opacity:1; transform:none }
   .details::before{ content:""; position:absolute; inset:6px; border:1px solid rgba(201,166,91,.35); border-radius:11px; pointer-events:none; }
-  .details .dl{ color:var(--gold); letter-spacing:.26em; text-transform:uppercase; font-size:11.5px; font-weight:600; position:relative }
-  .details .dwhen{ color:var(--crimson); font-size:19px; font-weight:600; margin:7px 0 4px; position:relative }
-  .details .dwhere{ color:var(--ink); font-size:16px; margin:0 0 15px; line-height:1.4; position:relative }
+  .details .dl{ color:var(--gold); letter-spacing:.26em; text-transform:uppercase; font-size:calc(11.5px * var(--pct-detalhes) / 100); font-weight:600; position:relative }
+  .details .dwhen{ color:var(--crimson); font-size:calc(19px * var(--pct-detalhes) / 100); font-weight:600; margin:7px 0 4px; position:relative }
+  .details .dwhere{ color:var(--ink); font-size:calc(16px * var(--pct-detalhes) / 100); margin:0 0 15px; line-height:1.4; position:relative }
   .details .route{ margin-top:0; display:inline-flex; align-items:center; justify-content:center; gap:.45em; width:auto; padding:12px 22px; position:relative }
   .details .pin{ font-size:16px; line-height:1 }
-  .details .dhint{ color:#9a8f7d; font-size:12.5px; margin:10px 0 0; position:relative }
+  .details .dhint{ color:#9a8f7d; font-size:calc(12.5px * var(--pct-detalhes) / 100); margin:10px 0 0; position:relative }
 
   /* =================== CONFIRMAÇÃO =================== */
   .rsvp{ width:100%; margin-top:16px; position:relative;
@@ -191,13 +195,13 @@
   .rsvp.in{ opacity:1; transform:translateY(0) }
   .rsvp::before{ content:""; position:absolute; inset:6px; border:1px solid rgba(201,166,91,.35); border-radius:11px; pointer-events:none; }
   .rsvp h2{ font-weight:600; color:var(--crimson); text-align:center; margin:0 0 2px;
-    font-size:clamp(22px,6vw,28px); letter-spacing:.01em; position:relative; }
-  .rsvp .lead{ text-align:center; margin:0 0 18px; font-size:16.5px; color:var(--ink); opacity:.85; position:relative; }
-  .rsvp .greet{ text-align:center; margin:-6px 0 16px; font-size:16.5px; color:var(--crimson); font-style:italic; position:relative; }
+    font-size:calc(clamp(22px,6vw,28px) * var(--pct-confirmacao) / 100); letter-spacing:.01em; position:relative; }
+  .rsvp .lead{ text-align:center; margin:0 0 18px; font-size:calc(16.5px * var(--pct-confirmacao) / 100); color:var(--ink); opacity:.85; position:relative; }
+  .rsvp .greet{ text-align:center; margin:-6px 0 16px; font-size:calc(16.5px * var(--pct-confirmacao) / 100); color:var(--crimson); font-style:italic; position:relative; }
   .rsvp .greet b{ font-style:normal; }
   .done .lockicon{ font-size:40px; margin:2px auto 8px; }
   .field{ position:relative }
-  .field label{ display:block; font-size:14px; color:var(--crimson); margin:0 0 6px; font-weight:500 }
+  .field label{ display:block; font-size:calc(14px * var(--pct-confirmacao) / 100); color:var(--crimson); margin:0 0 6px; font-weight:500 }
   .field input{ width:100%; font-family:"Cormorant Garamond",serif; font-size:18px; color:var(--ink);
     padding:14px; border:1px solid rgba(150,44,53,.35); border-radius:11px; background:#fff; outline:none;
     transition:border-color .2s, box-shadow .2s; }
@@ -215,11 +219,11 @@
   .btn:disabled{ filter:grayscale(.3) opacity(.7); cursor:default }
   .btn.ghost{ background:none; color:var(--crimson); border:1px solid var(--crimson); box-shadow:none; margin-top:10px; font-size:17px; min-height:46px; }
   .btn.ghost::after{ display:none }
-  .msg{ margin-top:10px; font-size:15px; min-height:0; text-align:center; position:relative }
+  .msg{ margin-top:10px; font-size:calc(15px * var(--pct-confirmacao) / 100); min-height:0; text-align:center; position:relative }
   .msg.err{ color:var(--rose) }
   .rsvp-dress{ text-align:center; color:var(--crimson); margin:10px 0 0; position:relative;
-    font-size:15px; line-height:1.4; }
-  .rsvp-dress .dc-warn{ display:block; font-style:italic; font-size:.95em; margin-top:2px; }
+    font-size:calc(15px * var(--pct-confirmacao) / 100); line-height:1.4; }
+  .rsvp-dress .dc-warn{ display:block; font-weight:700; font-style:italic; font-size:.95em; margin-top:2px; }
 
   .done{ text-align:center; padding:4px 2px; position:relative }
   .seal{ width:76px; height:76px; margin:2px auto 12px; border-radius:50%; position:relative;
@@ -291,7 +295,7 @@
       <canvas id="dust"></canvas>
       <div class="content layer" id="content">
         <div class="mono" id="uiMono">A</div>
-        <p class="eyebrow">com todo o carinho, convidamos você</p>
+        <p class="eyebrow">com todo o carinho, convidamos você para os</p>
         <h1 class="name" id="uiNome">Laís</h1>
         <p class="surname" id="uiSobrenome">Braga Vieira de Souza</p>
         <p class="occasion">quinze anos</p>
@@ -330,7 +334,7 @@
         <button class="btn" id="btn">Confirmar presença</button>
         <div class="msg" id="msg"></div>
       </div>
-      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
+      <p class="rsvp-dress">Código de vestimenta: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
     </div>
   </div>
 
@@ -360,7 +364,7 @@
    CONFIGURAÇÃO — edite apenas este bloco
    ========================================================================= */
 const CONFIG = {
-  ENDPOINT: "https://script.google.com/macros/s/AKfycbyd8yYniEHTMDaWeNTyi-QnItJBpZx2ZsMPsThYdAy_e2Sv42mTe_AfCck2PtAIX7m8/exec",                 // URL do App da Web (Apps Script). Vazio = modo demonstração.
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbyd8yYniEHTMDaWeNTyi-QnItJBpZx2ZsMPsThYdAy_e2Sv42mTe_AfCck2PtAIX7m8/exec", // App da Web (Apps Script)
   NOME: "Laís Braga Vieira de Souza", // nome completo da aniversariante
   MONOGRAMA: "",                // vazio = usa a 1ª letra do nome
   DATA_ISO: "2026-09-26",       // AAAA-MM-DD (contagem regressiva e calendário)
@@ -751,7 +755,7 @@ function petalBurst(){
 /* trilha sonora opcional (arquivo MP3) — desligada por padrão */
 (function(){
   const el=document.getElementById("sound"); if(!el) return;
-  const ARQUIVO = "musica_.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
+  const ARQUIVO = "musica.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
   const audio = new Audio();
   audio.src = ARQUIVO;
   audio.loop = true;                // toca em repetição
