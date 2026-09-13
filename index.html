@@ -376,7 +376,7 @@ const CONFIG = {
     { codigo:"LAIS-AB12", convidado:"Família Exemplo", vagas:2 },
     { codigo:"LAIS-CD34", convidado:"Tio João", vagas:1 }
   ],
-  ADMIN_KEY: "Cucuca"          // acesse ?admin=familia para ver a lista
+  ADMIN_KEY: "familia"          // acesse ?admin=familia para ver a lista
 };
 /* ========================================================================= */
 
@@ -748,21 +748,27 @@ function petalBurst(){
   })();
 }
 
-/* trilha sonora opcional (caixa de música, bem suave, desligada por padrão) */
+/* trilha sonora opcional (arquivo MP3) — desligada por padrão */
 (function(){
-  const el=document.getElementById("sound"); let ctx=null,timer=null,on=false;
-  const notas=[523.25,587.33,659.25,783.99,880.0,659.25,587.33,523.25]; let i=0;
-  function toca(freq){ const t=ctx.currentTime; const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type="triangle"; o.frequency.value=freq; o.connect(g); g.connect(ctx.destination);
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.09,t+.03);
-    g.gain.exponentialRampToValueAtTime(.0008,t+1.6); o.start(t); o.stop(t+1.7); }
-  function ligar(){ try{ ctx=ctx||new (window.AudioContext||window.webkitAudioContext)(); ctx.resume();
-    on=true; el.textContent="♫"; el.setAttribute("aria-label","Desativar trilha sonora");
-    toca(notas[i=(i+1)%notas.length]);
-    timer=setInterval(()=>toca(notas[i=(i+1)%notas.length]),900); }catch(e){} }
-  function desligar(){ on=false; el.textContent="♪"; el.setAttribute("aria-label","Ativar trilha sonora");
-    if(timer)clearInterval(timer); }
-  el.addEventListener("click",()=> on?desligar():ligar());
+  const el=document.getElementById("sound"); if(!el) return;
+  const ARQUIVO = "musica.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
+  const audio = new Audio();
+  audio.src = ARQUIVO;
+  audio.loop = true;                // toca em repetição
+  audio.preload = "none";           // só baixa quando a pessoa tocar (poupa dados no celular)
+  audio.volume = 0.6;               // volume, de 0 a 1
+  let tocando = false;
+  el.addEventListener("click", ()=>{
+    if(tocando){
+      audio.pause();
+      tocando=false; el.textContent="♪"; el.setAttribute("aria-label","Ativar trilha sonora");
+    }else{
+      audio.play().then(()=>{
+        tocando=true; el.textContent="♫"; el.setAttribute("aria-label","Desativar trilha sonora");
+      }).catch(()=>{ /* arquivo ausente, nome errado ou formato não suportado */ });
+    }
+  });
+  audio.addEventListener("ended", ()=>{ tocando=false; el.textContent="♪"; });
 })();
 </script>
 </body>
