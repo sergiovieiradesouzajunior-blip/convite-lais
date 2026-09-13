@@ -340,7 +340,7 @@
         <div class="msg" id="msg"></div>
       </div>
       <div id="resultados"></div>
-      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
+      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">ATENÇÃO: não use a cor vermelha, independentemente do tom</span></p>
     </div>
   </div>
 
@@ -522,6 +522,7 @@ function appendBloqueio(motivo){
         : "Este link não corresponde a um convite válido. Fale com quem organizou a festa.")+'</p></div>';
   document.getElementById("resultados").appendChild(div);
   const fb=document.getElementById("formBox"); if(fb) fb.remove();
+  const h=document.getElementById("scrollHint"); if(h) h.classList.add("hide"); // some sem vaga
 }
 
 async function enviar(){
