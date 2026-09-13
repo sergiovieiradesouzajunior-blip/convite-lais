@@ -295,7 +295,7 @@
       <canvas id="dust"></canvas>
       <div class="content layer" id="content">
         <div class="mono" id="uiMono">A</div>
-        <p class="eyebrow">com todo o carinho, convidamos você para os</p>
+        <p class="eyebrow">com todo o carinho, convidamos você</p>
         <h1 class="name" id="uiNome">Laís</h1>
         <p class="surname" id="uiSobrenome">Braga Vieira de Souza</p>
         <p class="occasion">quinze anos</p>
@@ -380,7 +380,7 @@ const CONFIG = {
     { codigo:"LAIS-AB12", convidado:"Família Exemplo", vagas:2 },
     { codigo:"LAIS-CD34", convidado:"Tio João", vagas:1 }
   ],
-  ADMIN_KEY: "familia"          // acesse ?admin=familia para ver a lista
+  ADMIN_KEY: "Cucuca"          // acesse ?admin=familia para ver a lista
 };
 /* ========================================================================= */
 
@@ -755,7 +755,7 @@ function petalBurst(){
 /* trilha sonora opcional (arquivo MP3) — desligada por padrão */
 (function(){
   const el=document.getElementById("sound"); if(!el) return;
-  const ARQUIVO = "musica.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
+  const ARQUIVO = "musica_.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
   const audio = new Audio();
   audio.src = ARQUIVO;
   audio.loop = true;                // toca em repetição
