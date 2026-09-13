@@ -500,8 +500,8 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
 (async function trava(){
   const codeField=document.getElementById("codeField");
   const greet=document.getElementById("greet");
-  if(!CONFIG.TRAVA){ if(codeField) codeField.style.display="none"; return; }
-  if(!codigoURL) return;                         // sem ?c=: mantém o campo para digitar
+  if(!CONFIG.TRAVA){ if(codeField) codeField.style.display="none"; mostrarHint(); return; }
+  if(!codigoURL){ mostrarHint(); return; }        // sem ?c=: mantém o campo para digitar
   if(codeField) codeField.style.display="none";  // OTIMISTA: esconde o campo de imediato
   try{
     const v=await validarCodigo(codigoURL);
@@ -512,12 +512,13 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
         if(greet){ greet.style.display="block";
           greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
             (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
+        mostrarHint();                 // há vaga: mostra o botão só agora (sem piscar)
       } else {
-        appendBloqueio(v.motivo);   // esgotado (com os cards reconstruídos acima) ou inválido
+        appendBloqueio(v.motivo);      // esgotado/inválido: o botão nunca aparece
       }
-    }
+    } else { mostrarHint(); }
     // erro/rede lenta: segue otimista; a validação real ocorre ao confirmar (no servidor)
-  }catch(e){ /* segue otimista; confirmar valida no servidor */ }
+  }catch(e){ mostrarHint(); /* segue otimista; confirmar valida no servidor */ }
 })();
 function appendBloqueio(motivo){
   const div=document.createElement("div"); div.className="resultado";
@@ -659,13 +660,17 @@ const stage=document.getElementById("stage");
   window.addEventListener("scroll", onScroll, {passive:true});
 })();
 
+function mostrarHint(){
+  const h=document.getElementById("scrollHint");
+  if(h && !h.classList.contains("hide"))
+    setTimeout(()=>{ if(!h.classList.contains("hide")) h.classList.add("show"); },400);
+}
 function iniciar(){
   if(iniciar._d) return; iniciar._d=true;
   requestAnimationFrame(()=>{
     stage.classList.add("in");
     setTimeout(()=>{ document.getElementById("details").classList.add("in");
                      document.getElementById("rsvp").classList.add("in"); },300);
-    const h=document.getElementById("scrollHint"); if(h) setTimeout(()=>h.classList.add("show"),1600);
     if(!reduce){ setTimeout(startFX, 1200); setTimeout(startParallax, 1650); }
   });
 }
