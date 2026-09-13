@@ -18,9 +18,9 @@
 <style>
   :root{
     /* ===== TAMANHO DOS TEXTOS POR CARD — edite os percentuais (100 = atual; 130 = +30%; 90 = -10%) ===== */
-    --pct-arte:100;         /* card principal (moldura) */
-    --pct-detalhes:100;     /* card de detalhes (data/horario/endereco) */
-    --pct-confirmacao:100;  /* card de confirmacao de presenca */
+    --pct-arte:113;         /* card principal (moldura) */
+    --pct-detalhes:140;     /* card de detalhes (data/horario/endereco) */
+    --pct-confirmacao:160;  /* card de confirmacao de presenca */
     --cream:#F1EDE2; --paper:#E9E3D4; --paper2:#FBF9F3;
     --crimson:#962C35; --rose:#A81E28; --deep:#7f2129;
     --green:#3B5E3A; --ink:#57262b;
@@ -102,7 +102,7 @@
     opacity:0; transform:translateY(6px);
   }
   .name{
-    font-family:"Pinyon Script",cursive; margin:0; line-height:.9;
+    font-family:"Pinyon Script",cursive; margin:-0.35em 0; padding:0.35em 0.6em; line-height:.9;
     font-size:calc(clamp(42px,14vw,80px) * var(--pct-arte) / 100);
     background:linear-gradient(100deg,var(--deep) 0%,var(--crimson) 38%,var(--gold2) 49%,var(--gold) 51%,var(--crimson) 62%,var(--deep) 100%);
     background-size:250% 100%; background-position:130% 0;
@@ -334,7 +334,7 @@
         <button class="btn" id="btn">Confirmar presença</button>
         <div class="msg" id="msg"></div>
       </div>
-      <p class="rsvp-dress">Código de vestimenta: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
+      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
     </div>
   </div>
 
