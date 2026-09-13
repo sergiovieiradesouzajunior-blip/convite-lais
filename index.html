@@ -1,4 +1,4 @@
-<meta<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -8,7 +8,7 @@
 <!-- Prévia no WhatsApp (Open Graph). Hospede um print e cole a URL em og:image. -->
 <meta property="og:title" content="Você está convidado(a) — Quinze Anos">
 <meta property="og:description" content="Toque para confirmar sua presença.">
-content="https://github.com/sergiovieiradesouzajunior-blip/convite-lais/blob/main/convite-previa.jpg"
+<meta property="og:image" content="">
 <meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -254,6 +254,16 @@ content="https://github.com/sergiovieiradesouzajunior-blip/convite-lais/blob/mai
     border-radius:9px; padding:8px 14px; cursor:pointer; font-size:15px; font-family:inherit }
 
   .foot{ margin-top:16px; font-size:12.5px; color:#9a8f7d; text-align:center }
+  .scrollhint{ position:fixed; left:50%; bottom:16px; z-index:30; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:1px; cursor:pointer;
+    background:rgba(150,44,53,.94); color:#FBF3E6; padding:9px 18px 6px; border-radius:24px;
+    box-shadow:0 10px 26px -10px rgba(90,26,30,.75);
+    font-family:"Cormorant Garamond",serif; font-size:15px; letter-spacing:.02em; white-space:nowrap;
+    opacity:0; transition:opacity .5s ease; }
+  .scrollhint.show{ opacity:1; animation:hintbob 1.6s ease-in-out infinite; }
+  .scrollhint.hide{ opacity:0 !important; animation:none; pointer-events:none; }
+  .scrollhint .chev{ width:20px; height:20px; stroke:#F3D9A0; stroke-width:2.6; fill:none; margin-top:1px; }
+  @keyframes hintbob{ 0%,100%{ transform:translateX(-50%) translateY(0) } 50%{ transform:translateX(-50%) translateY(-5px) } }
   #burst{ position:fixed; inset:0; z-index:50; pointer-events:none; }
 
   :focus-visible{ outline:2px solid var(--crimson); outline-offset:2px }
@@ -264,6 +274,7 @@ content="https://github.com/sergiovieiradesouzajunior-blip/convite-lais/blob/mai
     .glow{ opacity:1 !important; animation:none !important }
     .ornament path{ opacity:.5 !important; stroke-dashoffset:0 !important; animation:none !important }
     .shimmer,#dust,#petals{ display:none }
+    .scrollhint.show{ animation:none }
     .name{ background:none; color:var(--crimson); -webkit-text-fill-color:var(--crimson) }
   }
 </style>
@@ -338,6 +349,10 @@ content="https://github.com/sergiovieiradesouzajunior-blip/convite-lais/blob/mai
   </div>
 
   <div class="foot" id="foot"></div>
+  <div class="scrollhint" id="scrollHint" role="button" tabindex="0" aria-label="Rolar para confirmar presença">
+    <span>Toque para confirmar sua presença</span>
+    <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
   <canvas id="burst"></canvas>
 
 <script>
@@ -345,7 +360,7 @@ content="https://github.com/sergiovieiradesouzajunior-blip/convite-lais/blob/mai
    CONFIGURAÇÃO — edite apenas este bloco
    ========================================================================= */
 const CONFIG = {
-  ENDPOINT: "https://script.google.com/macros/s/AKfycbyvAIkUddD76Xtp6XdoN4T-52lJek_nMooPnBAcARfIbhYVkASCSpuz6qN9GIAHJCCvxQ/exec",                 // URL do App da Web (Apps Script). Vazio = modo demonstração.
+  ENDPOINT: "",                 // URL do App da Web (Apps Script). Vazio = modo demonstração.
   NOME: "Laís Braga Vieira de Souza", // nome completo da aniversariante
   MONOGRAMA: "",                // vazio = usa a 1ª letra do nome
   DATA_ISO: "2026-09-26",       // AAAA-MM-DD (contagem regressiva e calendário)
@@ -361,7 +376,7 @@ const CONFIG = {
     { codigo:"LAIS-AB12", convidado:"Família Exemplo", vagas:2 },
     { codigo:"LAIS-CD34", convidado:"Tio João", vagas:1 }
   ],
-  ADMIN_KEY: "Cucuca"          // acesse ?admin=familia para ver a lista
+  ADMIN_KEY: "familia"          // acesse ?admin=familia para ver a lista
 };
 /* ========================================================================= */
 
@@ -407,7 +422,7 @@ function jsonp(params){
   return new Promise((resolve,reject)=>{
     const cb="__rsvp_cb_"+Date.now()+Math.floor(Math.random()*1e4);
     const s=document.createElement("script");
-    const t=setTimeout(()=>{cleanup();reject(new Error("timeout"));},12000);
+    const t=setTimeout(()=>{cleanup();reject(new Error("timeout"));},9000);
     function cleanup(){clearTimeout(t);delete window[cb];s.remove();}
     window[cb]=(d)=>{cleanup();resolve(d);};
     const q=new URLSearchParams(Object.assign({callback:cb},params||{}));
@@ -474,18 +489,19 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
   const codeField=document.getElementById("codeField");
   const greet=document.getElementById("greet");
   if(!CONFIG.TRAVA){ if(codeField) codeField.style.display="none"; return; }
-  if(!codigoURL) return;  // sem ?c=: mantém o campo para digitar o código
+  if(!codigoURL) return;                         // sem ?c=: mantém o campo para digitar
+  if(codeField) codeField.style.display="none";  // OTIMISTA: esconde o campo de imediato
   try{
     const v=await validarCodigo(codigoURL);
     if(v && v.valido){
-      if(codeField) codeField.style.display="none";
       if(greet){ greet.style.display="block";
         greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
           (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
-    } else {
-      bloquear(v?v.motivo:"invalido");
+    } else if(v && v.valido===false){
+      bloquear(v.motivo);                         // inválido/esgotado CONFIRMADO pelo servidor
     }
-  }catch(e){ /* falha de rede: mantém o campo manual visível */ }
+    // erro/rede lenta: segue otimista; a validação real ocorre ao confirmar (no servidor)
+  }catch(e){ /* segue otimista; confirmar valida no servidor */ }
 })();
 function bloquear(motivo){
   formBox.innerHTML =
@@ -596,14 +612,31 @@ const stage=document.getElementById("stage");
 (function(){ const p=document.getElementById("arch"); try{ const L=p.getTotalLength();
   p.style.strokeDasharray=L; p.style.strokeDashoffset=L; }catch(e){} })();
 
-window.addEventListener("load",()=>{
+(function(){
+  const hint=document.getElementById("scrollHint"); if(!hint) return;
+  const alvo=document.getElementById("rsvp");
+  const ir=()=>{ if(alvo) alvo.scrollIntoView({behavior:"smooth", block:"start"}); };
+  hint.addEventListener("click", ir);
+  hint.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); ir(); } });
+  const esconder=()=>{ hint.classList.add("hide"); window.removeEventListener("scroll", onScroll); };
+  const onScroll=()=>{ if(window.scrollY>40) esconder(); };
+  window.addEventListener("scroll", onScroll, {passive:true});
+})();
+
+function iniciar(){
+  if(iniciar._d) return; iniciar._d=true;
   requestAnimationFrame(()=>{
     stage.classList.add("in");
     setTimeout(()=>{ document.getElementById("details").classList.add("in");
                      document.getElementById("rsvp").classList.add("in"); },300);
+    const h=document.getElementById("scrollHint"); if(h) setTimeout(()=>h.classList.add("show"),1600);
     if(!reduce){ setTimeout(startFX, 1200); setTimeout(startParallax, 1650); }
   });
-});
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", iniciar);
+else iniciar();
+window.addEventListener("load", iniciar);   // reforço
+setTimeout(iniciar, 900);                    // garantia: nunca fica invisível esperando fontes
 
 /* pétalas (frente) + poeira dourada (fundo) + brilhos */
 function startFX(){
