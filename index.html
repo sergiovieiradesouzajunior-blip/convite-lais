@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <title>Convite — Quinze Anos</title>
 
-<!-- Prévia no WhatsApp (Open Graph). Hospede um print e cole a URL em og:image. -->
+<!-- Prévia no WhatsApp (Open Graph) — imagem já configurada. -->
 <meta property="og:title" content="Você está convidado(a) — Quinze Anos">
 <meta property="og:description" content="Toque para confirmar sua presença.">
-<meta property="og:image" content="">
-content="https://sergiovieiradesouzajunior-blip.github.io/convite-lais/convite-previa.jpg"
+<meta property="og:image" content="https://sergiovieiradesouzajunior-blip.github.io/convite-lais/convite-previa.jpg">
+<meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,7 +74,7 @@ content="https://sergiovieiradesouzajunior-blip.github.io/convite-lais/convite-p
     position:absolute; left:15%; top:16%; width:70%; height:64%; z-index:3; pointer-events:none;
     background:
       radial-gradient(72% 58% at 50% 40%, #F1EDE2 0%, #F1EDE2 50%, rgba(241,237,226,0) 100%),
-      radial-gradient(58% 40% at 50% 84%, #F1EDE2 0%, rgba(241,237,226,0) 78%);
+      radial-gradient(62% 44% at 50% 82%, #F1EDE2 0%, #F1EDE2 55%, rgba(241,237,226,0) 100%);
   }
 
   #dust{ position:absolute; inset:0; z-index:4; pointer-events:none; }
@@ -360,7 +360,7 @@ content="https://sergiovieiradesouzajunior-blip.github.io/convite-lais/convite-p
    CONFIGURAÇÃO — edite apenas este bloco
    ========================================================================= */
 const CONFIG = {
-  ENDPOINT: "https://script.google.com/macros/s/AKfycbx9sEWRxPgvX4rOHgpJpDPe2kglw5zoemaRLhW5uqAWV0zjqiOMPwKOX7nCwR-JXaBHIA/exec",                 // URL do App da Web (Apps Script). Vazio = modo demonstração.
+  ENDPOINT: "",                 // URL do App da Web (Apps Script). Vazio = modo demonstração.
   NOME: "Laís Braga Vieira de Souza", // nome completo da aniversariante
   MONOGRAMA: "",                // vazio = usa a 1ª letra do nome
   DATA_ISO: "2026-09-26",       // AAAA-MM-DD (contagem regressiva e calendário)
@@ -751,7 +751,7 @@ function petalBurst(){
 /* trilha sonora opcional (arquivo MP3) — desligada por padrão */
 (function(){
   const el=document.getElementById("sound"); if(!el) return;
-  const ARQUIVO = "musica_.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
+  const ARQUIVO = "musica.mp3";     // <- nome do seu arquivo (mesma pasta do index.html)
   const audio = new Audio();
   audio.src = ARQUIVO;
   audio.loop = true;                // toca em repetição
