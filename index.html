@@ -612,6 +612,8 @@ function baixarICS(){
 (function admin(){
   const key=new URLSearchParams(location.search).get("admin");
   if(!key||key!==CONFIG.ADMIN_KEY) return;
+  // modo admin: mostra só o convite + a lista; oculta detalhes, confirmação e o botão flutuante
+  ["details","rsvp","scrollHint"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display="none"; });
   const box=document.getElementById("admin"); box.classList.add("show");
   const body=document.getElementById("admBody"), totalEl=document.getElementById("admTotal"),
         search=document.getElementById("admSearch");
