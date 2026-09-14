@@ -397,12 +397,15 @@ uiData.textContent = CONFIG.DATA_TEXTO;
 uiAno.textContent  = CONFIG.ANO;
 uiMono.textContent = (CONFIG.MONOGRAMA || (CONFIG.NOME.trim()[0] || "A")).toUpperCase();
 
-/* ---------- contagem regressiva ---------- */
+/* ---------- contagem regressiva (dias de calendário) ---------- */
 (function(){
-  const alvo = new Date(CONFIG.DATA_ISO + "T" + (CONFIG.HORA||"20:00") + ":00");
+  const p = CONFIG.DATA_ISO.split("-").map(Number);
+  const alvo = new Date(p[0], p[1]-1, p[2]);         // meia-noite do dia da festa (local)
   function upd(){
     const el = document.getElementById("uiCount");
-    const dias = Math.ceil((alvo - new Date())/86400000);
+    const ag = new Date();
+    const hoje = new Date(ag.getFullYear(), ag.getMonth(), ag.getDate()); // meia-noite de hoje
+    const dias = Math.round((alvo - hoje)/86400000);
     if (isNaN(dias)) { el.textContent=""; return; }
     el.textContent = dias>1 ? `faltam ${dias} dias` : dias===1 ? "falta 1 dia" :
                      dias===0 ? "é hoje!" : "";
