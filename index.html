@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Convite — Quinze Anos</title>
 
 <!-- Prévia no WhatsApp (Open Graph) — imagem já configurada. -->
@@ -172,6 +175,36 @@
     transition:transform .15s ease, background .2s ease; }
   .sound:active{ transform:scale(.92) }
 
+  /* ===== TELA DE PROJEÇÃO RETRÁTIL (aviso) ===== */
+  .banner{ position:absolute; left:14%; top:12%; width:72%; height:60%; z-index:11;
+    pointer-events:none; opacity:0; }
+  .banner.show{ opacity:1; }
+  .banner.hide{ opacity:0 !important; }
+  .tela-caixa{ position:absolute; top:0; left:-1.5%; width:103%; height:20px; border-radius:5px; z-index:5;
+    background:linear-gradient(180deg,#4a4038,#2b2520);
+    box-shadow:0 4px 8px -2px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.15); }
+  .tela-caixa::before{ content:""; position:absolute; left:10px; right:10px; top:7px; height:5px;
+    border-radius:3px; background:linear-gradient(180deg,#17130f,#3a332c); }
+  .tela-corpo{ position:absolute; top:15px; left:3%; width:94%; height:0; overflow:hidden; z-index:2;
+    background:linear-gradient(180deg,#fcf9f1,#f3ede1 72%,#ece5d6);
+    box-shadow:inset 0 8px 14px -8px rgba(0,0,0,.22), 0 10px 18px -10px rgba(60,20,20,.32);
+    border-left:1px solid rgba(0,0,0,.06); border-right:1px solid rgba(0,0,0,.06); }
+  .banner.show .tela-corpo{ animation:desenrolar 1.8s cubic-bezier(.33,1,.4,1) forwards; }
+  @keyframes desenrolar{ 0%{height:0} 84%{height:calc(100% - 8px)} 100%{height:calc(100% - 15px)} }
+  .tela-corpo::before{ content:""; position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(90deg, rgba(0,0,0,.014) 0 3px, rgba(255,255,255,.02) 3px 6px); }
+  .tela-barra{ position:absolute; left:-1.5%; bottom:0; width:103%; height:12px; border-radius:4px; z-index:4;
+    background:linear-gradient(180deg,#5a4f45,#312a23); box-shadow:0 4px 7px -1px rgba(0,0,0,.4); }
+  .tela-barra::after{ content:""; position:absolute; left:50%; bottom:-8px; width:30px; height:8px;
+    transform:translateX(-50%); border-radius:0 0 6px 6px; background:#312a23; }
+  .tela-proj{ position:absolute; top:15px; left:3%; width:94%; height:calc(100% - 27px);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:0 8%;
+    opacity:0; z-index:3; pointer-events:none; }
+  .banner.show .tela-proj{ animation:projetar .9s ease 1.75s forwards; }
+  @keyframes projetar{ from{opacity:0} to{opacity:1} }
+  .tela-proj p{ margin:0; color:var(--crimson); line-height:1.5; font-size:clamp(13px,3.7vw,19px); }
+  .tela-proj b{ font-weight:700; }
+
   /* =================== DETALHES =================== */
   .details{ width:100%; margin-top:16px; text-align:center; position:relative;
     background:linear-gradient(180deg,var(--paper2),#F2EEE2); border:1px solid rgba(150,44,53,.26);
@@ -259,6 +292,35 @@
   .admin .lnk{ background:none; border:1px solid var(--crimson); color:var(--crimson);
     border-radius:9px; padding:8px 14px; cursor:pointer; font-size:15px; font-family:inherit }
 
+  /* ===== CONFERÊNCIA / RECEPÇÃO (check-in) ===== */
+  .recepcao{ width:100%; max-width:464px; margin-top:16px; background:#fff;
+    border:1px solid rgba(150,44,53,.26); border-radius:16px; padding:18px; display:none; }
+  .recepcao.show{ display:block }
+  .recepcao h3{ margin:0 0 2px; color:var(--crimson); font-size:22px }
+  .recepcao .rec-sub{ margin:0 0 12px; font-size:14px; color:#9a8f7d }
+  .recepcao .rec-bar{ display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px }
+  .recepcao .rec-tt{ font-size:15px; color:var(--ink) } .recepcao .rec-tt b{ color:var(--crimson); font-size:22px }
+  .recepcao input{ width:100%; padding:12px 13px; border:1px solid rgba(150,44,53,.35);
+    border-radius:10px; font-family:inherit; font-size:17px; outline:none; box-sizing:border-box; }
+  .recepcao input:focus{ border-color:var(--crimson); box-shadow:0 0 0 3px rgba(150,44,53,.14) }
+  .recepcao .rec-aviso{ margin:12px 0; padding:11px 13px; border-radius:10px; line-height:1.42;
+    background:#FBEFE0; border:1px solid rgba(150,44,53,.35); color:var(--crimson); font-size:14.5px; }
+  .recepcao .rec-aviso b{ font-weight:700 }
+  .recepcao .rec-list{ display:flex; flex-direction:column; }
+  .recepcao .rec-item{ display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:11px 4px; border-bottom:1px solid #eee5d6; }
+  .recepcao .rec-nome{ display:flex; flex-direction:column; min-width:0 }
+  .recepcao .rec-nome b{ color:var(--ink); font-size:16.5px; line-height:1.2 }
+  .recepcao .rec-nome span{ color:#9a8f7d; font-size:12.5px }
+  .recepcao .rec-btn{ flex:none; cursor:pointer; font-family:inherit; font-size:14.5px; font-weight:600;
+    color:#FBF7EF; background:linear-gradient(180deg,var(--rose),var(--crimson)); border:0;
+    border-radius:9px; padding:10px 14px; min-height:44px; white-space:nowrap; }
+  .recepcao .rec-btn:active{ transform:translateY(1px) }
+  .recepcao .rec-btn.ok{ background:none; color:var(--green); border:1px solid var(--green); font-weight:700; cursor:default }
+  .recepcao .rec-empty{ padding:16px 6px; text-align:center; color:var(--crimson); font-size:15px; line-height:1.5 }
+  .recepcao .lnk{ margin-top:14px; background:none; border:1px solid var(--crimson); color:var(--crimson);
+    border-radius:9px; padding:9px 15px; cursor:pointer; font-size:15px; font-family:inherit }
+
   .foot{ margin-top:16px; font-size:12.5px; color:#9a8f7d; text-align:center }
   .scrollhint{ position:fixed; left:50%; bottom:16px; z-index:30; transform:translateX(-50%);
     display:flex; flex-direction:column; align-items:center; gap:1px; cursor:pointer;
@@ -280,6 +342,8 @@
     .glow{ opacity:1 !important; animation:none !important }
     .ornament path{ opacity:.5 !important; stroke-dashoffset:0 !important; animation:none !important }
     .shimmer,#dust,#petals{ display:none }
+    .banner.show .tela-corpo{ animation:none !important; height:calc(100% - 15px) !important; }
+    .banner.show .tela-proj{ animation:none !important; opacity:1 !important; }
     .scrollhint.show{ animation:none }
     .name{ background:none; color:var(--crimson); -webkit-text-fill-color:var(--crimson) }
   }
@@ -310,6 +374,15 @@
       <div class="shimmer"></div>
       <div class="vignette"></div>
       <button class="sound" id="sound" aria-label="Ativar trilha sonora" title="Trilha sonora">♪</button>
+      <div class="banner" id="banner" aria-hidden="true">
+        <div class="tela-caixa"></div>
+        <div class="tela-corpo">
+          <div class="tela-barra"></div>
+        </div>
+        <div class="tela-proj">
+          <p>Com carinho, pedimos que confirme sua presença <b>até amanhã (17 de setembro)</b>. Precisamos fechar a lista da festa e a sua confirmação faz toda a diferença para nós.</p>
+        </div>
+      </div>
     </div>
 
     <div class="details" id="details">
@@ -337,7 +410,7 @@
         <div class="msg" id="msg"></div>
       </div>
       <div id="resultados"></div>
-      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">(ATENÇÃO: não use a cor vermelha, independentemente do tom)</span></p>
+      <p class="rsvp-dress">Traje: esporte fino<br><span class="dc-warn">ATENÇÃO: não use a cor vermelha, independentemente do tom</span></p>
     </div>
   </div>
 
@@ -353,6 +426,19 @@
       <button class="lnk" id="admRefresh">Atualizar</button>
       <button class="lnk" id="admCsv">Exportar CSV</button>
     </div>
+  </div>
+
+  <div class="recepcao" id="recepcao">
+    <h3>Conferência de convidados</h3>
+    <p class="rec-sub">Recepção · confira quem confirmou e registre a presença de quem chegou.</p>
+    <div class="rec-bar">
+      <span class="rec-tt">Confirmados: <b id="recConf">0</b></span>
+      <span class="rec-tt">Presentes: <b id="recPres">0</b></span>
+    </div>
+    <input id="recSearch" type="text" autocomplete="off" placeholder="Buscar convidado pelo nome…">
+    <p class="rec-aviso">⚠️ Não encontrou o convidado na lista? <b>Chame o pai ou a mãe da Laís</b> antes de liberar a entrada.</p>
+    <div id="recBody" class="rec-list"></div>
+    <button class="lnk" id="recRefresh">Atualizar lista</button>
   </div>
 
   <div class="foot" id="foot"></div>
@@ -383,7 +469,8 @@ const CONFIG = {
     { codigo:"LAIS-AB12", convidado:"Família Exemplo", vagas:2 },
     { codigo:"LAIS-CD34", convidado:"Tio João", vagas:1 }
   ],
-  ADMIN_KEY: "convidados_20260926"          // acesse ?admin=familia para ver a lista
+  ADMIN_KEY: "convidados_20260926",         // acesse ?admin=<chave> para ver a lista
+  RECEPCAO_KEY: "recepcao_20260926"         // acesse ?recepcao=<chave> na recepção (conferência + check-in)
 };
 /* ========================================================================= */
 
@@ -394,12 +481,15 @@ uiData.textContent = CONFIG.DATA_TEXTO;
 uiAno.textContent  = CONFIG.ANO;
 uiMono.textContent = (CONFIG.MONOGRAMA || (CONFIG.NOME.trim()[0] || "A")).toUpperCase();
 
-/* ---------- contagem regressiva ---------- */
+/* ---------- contagem regressiva (dias de calendário) ---------- */
 (function(){
-  const alvo = new Date(CONFIG.DATA_ISO + "T" + (CONFIG.HORA||"20:00") + ":00");
+  const p = CONFIG.DATA_ISO.split("-").map(Number);
+  const alvo = new Date(p[0], p[1]-1, p[2]);         // meia-noite do dia da festa (local)
   function upd(){
     const el = document.getElementById("uiCount");
-    const dias = Math.ceil((alvo - new Date())/86400000);
+    const ag = new Date();
+    const hoje = new Date(ag.getFullYear(), ag.getMonth(), ag.getDate()); // meia-noite de hoje
+    const dias = Math.round((alvo - hoje)/86400000);
     if (isNaN(dias)) { el.textContent=""; return; }
     el.textContent = dias>1 ? `faltam ${dias} dias` : dias===1 ? "falta 1 dia" :
                      dias===0 ? "é hoje!" : "";
@@ -448,10 +538,12 @@ async function validarCodigo(cod){
   if(temPlanilha()) return await jsonp({action:"validar", codigo:cod});
   if(temDemo()){
     const c=convDemo(cod); if(!c) return {ok:true,valido:false,motivo:"invalido"};
-    const rest=(c.vagas||1)-usadasDemo(await lerDemo(),cod);
-    return {ok:true,valido:rest>0,motivo:rest>0?"":"esgotado",convidado:c.convidado,restantes:rest};
+    const all=await lerDemo(); const confirmados=[];
+    all.forEach((x,i)=>{ if(String(x.codigo||"").toUpperCase()===cod) confirmados.push({nome:x.nome,num:i+1}); });
+    const rest=(c.vagas||1)-confirmados.length;
+    return {ok:true,valido:rest>0,motivo:rest>0?"":"esgotado",convidado:c.convidado,restantes:rest,confirmados:confirmados};
   }
-  return {ok:true,valido:true}; // sem backend e sem demo: não há como validar de fato
+  return {ok:true,valido:true,confirmados:[]}; // sem backend e sem demo: não há como validar de fato
 }
 async function confirmar(cod,nome){
   cod=String(cod||"").trim().toUpperCase();
@@ -479,6 +571,29 @@ async function carregar(){
   if(temDemo()){ const l=await lerDemo(); return {total:l.length, lista:l}; }
   return {total:0, lista:[]};
 }
+const PRES_KEY = "rsvp:presencas";
+async function lerPresDemo(){ let l=[]; try{const r=await window.storage.get(PRES_KEY,true); if(r&&r.value)l=JSON.parse(r.value);}catch(e){} return l; }
+async function gravarPresDemo(l){ await window.storage.set(PRES_KEY,JSON.stringify(l),true); }
+async function checkinLista(){
+  if(temPlanilha()){ const d=await jsonp({action:"checkin_lista"});
+    return {lista:(d.lista||[]), totalConfirmados:d.totalConfirmados||0, totalPresentes:d.totalPresentes||0}; }
+  if(temDemo()){
+    const conf=await lerDemo(), pres=await lerPresDemo(); const setP={}; pres.forEach(p=>setP[String(p.id)]=true);
+    const lista=conf.map((x,i)=>({id:i+1, nome:x.nome, codigo:x.codigo, convidado:x.convidado, presente:!!setP[String(i+1)]}));
+    return {lista:lista, totalConfirmados:lista.length, totalPresentes:pres.length};
+  }
+  return {lista:[], totalConfirmados:0, totalPresentes:0};
+}
+async function checkinRegistrar(id,nome,codigo,convite){
+  if(temPlanilha()){ const d=await jsonp({action:"checkin_registrar", id:id, nome:nome, codigo:codigo, convite:convite});
+    if(!d||!d.ok) throw new Error("falha"); return {totalPresentes:d.totalPresentes}; }
+  if(temDemo()){
+    const pres=await lerPresDemo();
+    if(!pres.some(p=>String(p.id)===String(id))) pres.push({id:id, nome:nome, ts:Date.now(), codigo:codigo, convidado:convite});
+    await gravarPresDemo(pres); return {totalPresentes:pres.length};
+  }
+  throw new Error("config");
+}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 
 /* ---------- RSVP ---------- */
@@ -495,20 +610,25 @@ const codigoURL = (new URLSearchParams(location.search).get("c")||"").trim().toU
 (async function trava(){
   const codeField=document.getElementById("codeField");
   const greet=document.getElementById("greet");
-  if(!CONFIG.TRAVA){ if(codeField) codeField.style.display="none"; return; }
-  if(!codigoURL) return;                         // sem ?c=: mantém o campo para digitar
+  if(!CONFIG.TRAVA){ if(codeField) codeField.style.display="none"; mostrarHint(); return; }
+  if(!codigoURL){ mostrarHint(); return; }        // sem ?c=: mantém o campo para digitar
   if(codeField) codeField.style.display="none";  // OTIMISTA: esconde o campo de imediato
   try{
     const v=await validarCodigo(codigoURL);
-    if(v && v.valido){
-      if(greet){ greet.style.display="block";
-        greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
-          (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
-    } else if(v && v.valido===false){
-      appendBloqueio(v.motivo);                    // inválido/esgotado CONFIRMADO pelo servidor
-    }
+    if(v){
+      // reconstrói os cards das confirmações já feitas neste convite (na ordem)
+      if(Array.isArray(v.confirmados)) v.confirmados.forEach(c=> appendConfirmacao(c.nome, c.num));
+      if(v.valido){
+        if(greet){ greet.style.display="block";
+          greet.innerHTML = (v.convidado?("Convite de <b>"+escapeHtml(v.convidado)+"</b>. "):"") +
+            (v.restantes!=null?("Vaga(s): "+v.restantes):""); }
+        mostrarHint();                 // há vaga: mostra o botão só agora (sem piscar)
+      } else {
+        appendBloqueio(v.motivo);      // esgotado/inválido: o botão nunca aparece
+      }
+    } else { mostrarHint(); }
     // erro/rede lenta: segue otimista; a validação real ocorre ao confirmar (no servidor)
-  }catch(e){ /* segue otimista; confirmar valida no servidor */ }
+  }catch(e){ mostrarHint(); /* segue otimista; confirmar valida no servidor */ }
 })();
 function appendBloqueio(motivo){
   const div=document.createElement("div"); div.className="resultado";
@@ -519,6 +639,8 @@ function appendBloqueio(motivo){
         : "Este link não corresponde a um convite válido. Fale com quem organizou a festa.")+'</p></div>';
   document.getElementById("resultados").appendChild(div);
   const fb=document.getElementById("formBox"); if(fb) fb.remove();
+  const h=document.getElementById("scrollHint"); if(h) h.classList.add("hide"); // some sem vaga
+  const bn=document.getElementById("banner"); if(bn) bn.classList.add("hide");
 }
 
 async function enviar(){
@@ -534,7 +656,10 @@ async function enviar(){
     appendConfirmacao(nome, r.total);
     petalBurst();
     if(r.restantes!=null && r.restantes<=0){
-      appendBloqueio("esgotado");                 // esgotou: o card fica e o formulário sai
+      // esgotou nesta sessão: fica só o(s) card(s) de confirmação; NÃO mostra "já utilizado" agora
+      const fb=document.getElementById("formBox"); if(fb) fb.remove();
+      const hh=document.getElementById("scrollHint"); if(hh) hh.classList.add("hide");
+      const bb=document.getElementById("banner"); if(bb) bb.classList.add("hide");
     }else{
       nomeEl.value="";                            // pronto para a próxima pessoa deste convite
       btn.disabled=false; btn.textContent="Confirmar presença";
@@ -596,6 +721,8 @@ function baixarICS(){
 (function admin(){
   const key=new URLSearchParams(location.search).get("admin");
   if(!key||key!==CONFIG.ADMIN_KEY) return;
+  // modo admin: mostra só o convite + a lista; oculta detalhes, confirmação e o botão flutuante
+  ["details","rsvp","scrollHint","banner"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display="none"; });
   const box=document.getElementById("admin"); box.classList.add("show");
   const body=document.getElementById("admBody"), totalEl=document.getElementById("admTotal"),
         search=document.getElementById("admSearch");
@@ -625,6 +752,51 @@ function baixarICS(){
   render();
 })();
 
+(function recepcao(){
+  const key=new URLSearchParams(location.search).get("recepcao");
+  if(!key || (key!==CONFIG.RECEPCAO_KEY && key!==CONFIG.ADMIN_KEY)) return;
+  ["details","rsvp","scrollHint","banner","admin"].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.display="none"; });
+  const box=document.getElementById("recepcao"); box.classList.add("show");
+  const body=document.getElementById("recBody"), busca=document.getElementById("recSearch"),
+        elConf=document.getElementById("recConf"), elPres=document.getElementById("recPres");
+  let cache=[];
+  const fold=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+  function contagem(){ elConf.textContent=cache.length; elPres.textContent=cache.filter(x=>x.presente).length; }
+  function paint(){
+    const q=fold(busca.value);
+    const rows=q?cache.filter(x=>fold(x.nome).includes(q)):cache.slice();
+    if(!rows.length){
+      body.innerHTML=q
+        ? '<div class="rec-empty">Ninguém encontrado com esse nome.<br>Se a pessoa afirma ter sido convidada, <b>chame o pai ou a mãe da Laís</b>.</div>'
+        : '<div class="rec-empty">Nenhum convidado confirmado ainda.</div>';
+      return;
+    }
+    body.innerHTML=rows.map(x=>
+      '<div class="rec-item"><div class="rec-nome"><b>'+escapeHtml(x.nome||"")+'</b><span>'+
+      (x.convidado?("Convite: "+escapeHtml(x.convidado)):"")+'</span></div>'+
+      (x.presente
+        ? '<button class="rec-btn ok" disabled>✓ Presente</button>'
+        : '<button class="rec-btn" data-id="'+escapeHtml(String(x.id))+'">Registrar presença</button>')+
+      '</div>').join("");
+    body.querySelectorAll(".rec-btn:not(.ok)").forEach(btn=>{
+      btn.addEventListener("click",async()=>{
+        const item=cache.find(y=>String(y.id)===String(btn.getAttribute("data-id"))); if(!item) return;
+        btn.disabled=true; btn.textContent="Registrando…";
+        try{ await checkinRegistrar(item.id,item.nome,item.codigo,item.convidado); item.presente=true; contagem(); paint(); }
+        catch(e){ btn.disabled=false; btn.textContent="Tentar de novo"; }
+      });
+    });
+  }
+  async function carregarRec(){
+    body.innerHTML='<div class="rec-empty">carregando…</div>';
+    try{ const d=await checkinLista(); cache=(d.lista||[]); contagem(); paint(); }
+    catch(e){ body.innerHTML='<div class="rec-empty">Não foi possível carregar a lista.</div>'; }
+  }
+  busca.addEventListener("input",paint);
+  document.getElementById("recRefresh").addEventListener("click",carregarRec);
+  carregarRec();
+})();
+
 document.getElementById("foot").textContent =
   temPlanilha()?"":(temDemo()?"Modo demonstração — as confirmações ficam salvas apenas nesta prévia.":"");
 
@@ -647,13 +819,19 @@ const stage=document.getElementById("stage");
   window.addEventListener("scroll", onScroll, {passive:true});
 })();
 
+function mostrarHint(){
+  const h=document.getElementById("scrollHint");
+  if(h && !h.classList.contains("hide"))
+    setTimeout(()=>{ if(!h.classList.contains("hide")) h.classList.add("show"); },400);
+  const b=document.getElementById("banner");
+  if(b && !b.classList.contains("hide")) b.classList.add("show");
+}
 function iniciar(){
   if(iniciar._d) return; iniciar._d=true;
   requestAnimationFrame(()=>{
     stage.classList.add("in");
     setTimeout(()=>{ document.getElementById("details").classList.add("in");
                      document.getElementById("rsvp").classList.add("in"); },300);
-    const h=document.getElementById("scrollHint"); if(h) setTimeout(()=>h.classList.add("show"),1600);
     if(!reduce){ setTimeout(startFX, 1200); setTimeout(startParallax, 1650); }
   });
 }
